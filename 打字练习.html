@@ -3,60 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>打字比赛</title>
+    <title>打字练习</title>
 
     <script>
-        let bytes = new Array(232,174,161,231,174,151,230,156,186,230,152,175,228,184,128,231,167,141,231,148,168,228,186,142,228,191,161,230,129,175,229,164,132,231,144,134,231,154,132,231,148,181,229,173,144,232,174,190,229,164,135,227,128,130,229,174,131,229,143,175,228,187,165,232,191,155,232,161,140,229,144,132,231,167,141,229,164,141,230,157,130,231,154,132,232,174,161,231,174,151,239,188,140,229,173,152,229,130,168,229,164,167,233,135,143,228,191,161,230,129,175,239,188,140,229,185,182,229,143,175,233,128,154,232,191,135,232,190,147,229,133,165,232,190,147,229,135,186,232,174,190,229,164,135,228,184,142,231,148,168,230,136,183,232,191,155,232,161,140,228,186,164,228,186,146,227,128,130,232,174,161,231,174,151,230,156,186,231,154,132,229,143,145,229,177,149,231,187,143,229,142,134,228,186,134,229,164,154,228,184,170,233,152,182,230,174,181,239,188,140,228,187,142,230,156,128,229,136,157,231,154,132,229,183,168,229,158,139,230,156,186,229,136,176,231,142,176,229,156,168,231,154,132,229,176,143,229,158,139,229,140,150,227,128,129,230,153,174,229,143,138,229,140,150,229,146,140,230,153,186,232,131,189,229,140,150,227,128,130);
-        let name;
-        let id;
-        let jsonString = "";
-        let seed = "";
-        let starttime = new Date();
-        let loadtime;        
-        let intervalId;
-
-        starttime.setFullYear(2023);
-        starttime.setMonth(11 -1);
-        starttime.setDate(22);
-        starttime.setHours(23);
-        starttime.setMinutes(43);
-        starttime.setSeconds(0);
-        
+        let str = "计算机是一种能够自动执行指令，进行算术和逻辑运算的电子设备。它由硬件和软件组成，可以完成各种复杂的任务，如文字处理、图像处理、游戏娱乐等。计算机的出现改变了人们的生活方式，成为了现代社会中不可或缺的工具。随着技术的不断发展，计算机的应用领域越来越广泛，涉及到工业、商业、科学、教育、医疗等各个领域。计算机在提高生产效率、促进科技进步、推动社会发展等方面发挥了重要作用。";
+        let logintime;
+        let interval;
 
         window.addEventListener('load', function(){
-            loadtime = new Date();
-            if(loadtime.getTime() - starttime.getTime() > 180000){
-                clearInterval(intervalId);                 
-                document.write('比赛超时！');
-            }
+            logintime = new Date().getTime() + 5000;
+
             let inputElement = document.querySelector('#input');
 
-            inputElement.addEventListener('paste', function(e) { 
-                e.preventDefault();  
-                alert("禁止粘贴");
-            })  
-
-            inputElement.addEventListener('input', function(event) {  
+            inputElement.addEventListener('input', function(event){
                 let inputValue = event.target.value;
-
-                let seedValue = Math.floor(Math.random()*10)
-
-                jsonString += `{Value:[${inputValue}];Date:[${new Date().getTime()}];Seed:[${seedValue}]}`; 
-                seed += seedValue;
 
                 if(textcontrast(inputValue)){
                     inputElement.style.color = 'black';
-                    if(inputValue.length == utf8ByteToUnicodeStr(bytes).length){
-                        jsonString += `{End:[${new Date().getTime()}];Seed:${seed};Time:[${MygetTime('min')}:${MygetTime('sec')}:${MygetTime('mil')}]}`;
-                        let jsonStr = JSON.stringify(jsonString);
-                        let blob = new Blob([jsonStr], {type: "application/json"});  
-                        let url = URL.createObjectURL(blob);  
-                        let a = document.createElement("a");  
-                        a.href = url;  
-                        a.download = `${name}${id}.json`;
-                        a.click();
-
-                        document.write(`已完成！用时${MygetTime('min')}分${MygetTime('sec')}秒${MygetTime('mil')}毫秒`);
+                    if(inputValue.length == str.length){
+                        document.write(`已完成！用时${MygetTime('min')}分${MygetTime('sec')}秒${MygetTime('mil')}毫秒。<br>【刷新页面可重新打字】`);
                     }
                 }
                 else{
@@ -67,91 +32,17 @@
             const timermin = document.querySelector('.timermin');
             const timersec = document.querySelector('.timersec');
             const timermil = document.querySelector('.timermil');
-            intervalId = setInterval(function() {  
+            interval = setInterval(function() {  
                 timermin.innerText = (MygetTime('min'));
                 timersec.innerText = (MygetTime('sec'));
                 timermil.innerText = (MygetTime('mil'));
-
-                let maxtime = 20;
-
-                if(MygetTime('min') >= maxtime){
-                        clearInterval(intervalId);
-                        
-                        jsonString += `{End:[${new Date().getTime()}];Seed:${seed};Timer:[null]}`;
-                        let jsonStr = JSON.stringify(jsonString);
-                        let blob = new Blob([jsonStr], {type: "application/json"});
-                        let url = URL.createObjectURL(blob);
-                        let a = document.createElement("a");
-                        a.href = url;
-                        a.download = `${name}${id}.json`;
-                        a.click();
-
-                        document.write(`比赛超时！用时${maxtime}分00秒00毫秒`);
-                    }
             }, 10);  
         });
-
-        function utf8ByteToUnicodeStr(utf8Bytes){
-            let unicodeStr ="";
-            for (let pos = 0; pos < utf8Bytes.length;){
-                let flag= utf8Bytes[pos];
-                let unicode = 0 ;
-                if ((flag >>>7) === 0 ) {
-                    unicodeStr+= String.fromCharCode(utf8Bytes[pos]);
-                    pos += 1;
-
-                } else if ((flag &0xFC) === 0xFC ){
-                    unicode = (utf8Bytes[pos] & 0x3) << 30;
-                    unicode |= (utf8Bytes[pos+1] & 0x3F) << 24;
-                    unicode |= (utf8Bytes[pos+2] & 0x3F) << 18;
-                    unicode |= (utf8Bytes[pos+3] & 0x3F) << 12;
-                    unicode |= (utf8Bytes[pos+4] & 0x3F) << 6;
-                    unicode |= (utf8Bytes[pos+5] & 0x3F);
-                    unicodeStr+= String.fromCharCode(unicode) ;
-                    pos += 6;
-
-                }else if ((flag &0xF8) === 0xF8 ){
-                    unicode = (utf8Bytes[pos] & 0x7) << 24;
-                    unicode |= (utf8Bytes[pos+1] & 0x3F) << 18;
-                    unicode |= (utf8Bytes[pos+2] & 0x3F) << 12;
-                    unicode |= (utf8Bytes[pos+3] & 0x3F) << 6;
-                    unicode |= (utf8Bytes[pos+4] & 0x3F);
-                    unicodeStr+= String.fromCharCode(unicode) ;
-                    pos += 5;
-
-                } else if ((flag &0xF0) === 0xF0 ){
-                    unicode = (utf8Bytes[pos] & 0xF) << 18;
-                    unicode |= (utf8Bytes[pos+1] & 0x3F) << 12;
-                    unicode |= (utf8Bytes[pos+2] & 0x3F) << 6;
-                    unicode |= (utf8Bytes[pos+3] & 0x3F);
-                    unicodeStr+= String.fromCharCode(unicode) ;
-                    pos += 4;
-
-                } else if ((flag &0xE0) === 0xE0 ){
-                    unicode = (utf8Bytes[pos] & 0x1F) << 12;;
-                    unicode |= (utf8Bytes[pos+1] & 0x3F) << 6;
-                    unicode |= (utf8Bytes[pos+2] & 0x3F);
-                    unicodeStr+= String.fromCharCode(unicode) ;
-                    pos += 3;
-
-                } else if ((flag &0xC0) === 0xC0 ){ //110
-                    unicode = (utf8Bytes[pos] & 0x3F) << 6;
-                    unicode |= (utf8Bytes[pos+1] & 0x3F);
-                    unicodeStr+= String.fromCharCode(unicode) ;
-                    pos += 2;
-
-                } else{
-                    unicodeStr+= String.fromCharCode(utf8Bytes[pos]);
-                    pos += 1;
-                }
-            }
-            return unicodeStr;
-        }
 
         function textcontrast(text){
             let len = text.length;
 
-            if(text == utf8ByteToUnicodeStr(bytes).substring(0, len)){
+            if(text == str.substring(0, len)){
                 return true;
             }
             else{
@@ -160,13 +51,14 @@
         }
 
         function MygetTime(what){
-            let time = new Date().getTime() - starttime.getTime();
+            let time = new Date().getTime() - logintime;
             if(time >= 0){
                 document.querySelector('.timertext').innerText = '开始';
-                document.querySelector('#input').style.display = 'block';
-                document.querySelector('#rule').style.display = 'none';
+                document.querySelector('#input').style.opacity = '1';
+                document.querySelector('#input').style.pointerEvents = 'auto';
+
                 MygetTime = (what) => {
-                    let time = new Date().getTime() - starttime.getTime();
+                    let time = new Date().getTime() - logintime;
 
                     switch(what){
                         case 'min':
@@ -187,7 +79,7 @@
 
             switch(what){
                 case 'min':
-                    let min = Math.trunc(time / 60000);                    
+                    let min = Math.trunc(time / 60000);
                     return min.toString().length == 1? '0' + min:min;
                 case 'sec':
                     let sec = Math.trunc(time % 60000 / 1000);
@@ -270,7 +162,8 @@
         }
 
         #input{
-            display: none;
+            pointer-events: none;
+            opacity: 0.2;
 
             position: absolute;
 
@@ -297,7 +190,7 @@
 
             resize: none;
 
-
+            transition: opacity 0.3s ease-in;
         }
         .nav{
             width: auto;
@@ -354,7 +247,7 @@
     <div id="textbox">
         <div id="text">
             <script>
-                document.write(utf8ByteToUnicodeStr(bytes));
+                document.write(str);
             </script>
         </div>
     </div>

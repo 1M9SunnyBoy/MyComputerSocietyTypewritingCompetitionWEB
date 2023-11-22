@@ -14,7 +14,7 @@
         let seed = "";
         let starttime = new Date();
         let loadtime;        
-        let intervalId;
+        let interval;
 
         starttime.setFullYear(2023);
         starttime.setMonth(11 -1);
@@ -27,7 +27,7 @@
         window.addEventListener('load', function(){
             loadtime = new Date();
             if(loadtime.getTime() - starttime.getTime() > 180000){
-                clearInterval(intervalId);                 
+                clearInterval(interval);                 
                 document.write('比赛超时！');
             }
             let inputElement = document.querySelector('#input');
@@ -68,7 +68,7 @@
             const timermin = document.querySelector('.timermin');
             const timersec = document.querySelector('.timersec');
             const timermil = document.querySelector('.timermil');
-            intervalId = setInterval(function() {  
+            interval = setInterval(function() {  
                 timermin.innerText = (MygetTime('min'));
                 timersec.innerText = (MygetTime('sec'));
                 timermil.innerText = (MygetTime('mil'));
@@ -76,7 +76,7 @@
                 let maxtime = 20;
 
                 if(MygetTime('min') >= maxtime){
-                        clearInterval(intervalId);
+                        clearInterval(interval);
                         
                         jsonString += `{End:[${new Date().getTime()}];Seed:${seed};Timer:[null]}`;
                         let jsonStr = JSON.stringify(jsonString);
