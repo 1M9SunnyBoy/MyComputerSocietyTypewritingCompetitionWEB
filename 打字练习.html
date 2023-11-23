@@ -10,22 +10,36 @@
         let logintime;
         let interval;
 
+        let EnteredtextElement;
+        let unEnteredtextElement;
+        let inputElement;
+
         window.addEventListener('load', function(){
             logintime = new Date().getTime() + 5000;
 
-            let inputElement = document.querySelector('#input');
+            inputElement = document.querySelector('#input');
+            EnteredtextElement = document.querySelector('#Enteredtext');
+            unEnteredtextElement = document.querySelector('#unEnteredtext');
+
+            unEnteredtextElement.innerText = str;
+
 
             inputElement.addEventListener('input', function(event){
-                let inputValue = event.target.value;
+                inputValue = event.target.value;
 
                 if(textcontrast(inputValue)){
                     inputElement.style.color = 'black';
+
+                    textEnteredtext();                    
+
                     if(inputValue.length == str.length){
                         document.write(`已完成！用时${MygetTime('min')}分${MygetTime('sec')}秒${MygetTime('mil')}毫秒。<br>【刷新页面可重新打字】`);
                     }
                 }
                 else{
                     inputElement.style.color = 'red';
+
+                    textEnteredtext();                    
                 }
             });
 
@@ -62,7 +76,7 @@
 
                     switch(what){
                         case 'min':
-                            let min = Math.trunc(time / 60000);                    
+                            let min = Math.trunc(time / 60000);
                             return min.toString().length == 1? '0' + min:min;
                         case 'sec':
                             let sec = Math.trunc(time % 60000 / 1000);
@@ -90,6 +104,23 @@
                 default:
                     return null;
             }
+        }
+
+        function inputEnteredtext(){
+            for(let i = 0; i < inputValue.length; i++){
+                console.log(str.charAt(i) + ' = ' + inputValue.charAt(i));              
+                if(str.charAt(i) != inputValue.charAt(i)){
+                    return i;
+                }
+            }
+            return inputValue.length;
+        }
+
+        function textEnteredtext(){
+            let i = inputEnteredtext();
+            console.log(i);
+            EnteredtextElement.innerText = str.substring(0, i);
+            unEnteredtextElement.innerText = str.substring(i, str.length + 1);
         }
     </script>
 
@@ -153,6 +184,19 @@
             overflow-y: scroll;
         }
 
+        #Enteredtext{
+            margin: 0;
+            padding: 0;
+
+            font-weight: 800;
+        }
+
+        #unEnteredtext{
+            margin: 0;
+            padding: 0;
+        }
+
+
         #inputbox{
             position: absolute;
             top: 40px;
@@ -192,6 +236,7 @@
 
             transition: opacity 0.3s ease-in;
         }
+
         .nav{
             width: auto;
             height: 30px;
@@ -245,10 +290,10 @@
         </div>
     </div>
     <div id="textbox">
+    
         <div id="text">
-            <script>
-                document.write(str);
-            </script>
+            <span id="Enteredtext"></span>    
+            <span id="unEnteredtext"></span>
         </div>
     </div>
     <div id="inputbox">
