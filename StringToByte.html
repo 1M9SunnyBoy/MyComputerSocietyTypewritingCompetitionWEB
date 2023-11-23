@@ -8,28 +8,7 @@
     <script>
         let str = "计算机是一种用于信息处理的电子设备。它可以进行各种复杂的计算，存储大量信息，并可通过输入输出设备与用户进行交互。计算机的发展经历了多个阶段，从最初的巨型机到现在的小型化、普及化和智能化。";
 
-        var bytes = new Array();
-        var len, c;
-        len = str.length;
-        for (var i = 0; i < len; i++){
-            c = str.charCodeAt(i);
-            if (c >= 0x010000 && c <= 0x10FFFF) {
-                bytes.push(((c >> 18) & 0x07) | 0xF0);
-                bytes.push(((c >> 12) & 0x3F) | 0x80);
-                bytes.push(((c >> 6) & 0x3F) | 0x80);
-                bytes.push((c & 0x3F) | 0x80);
-            } else if (c >= 0x000800 && c <= 0x00FFFF) {
-                bytes.push(((c >> 12) & 0x0F) | 0xE0);
-                bytes.push(((c >> 6) & 0x3F) | 0x80);
-                bytes.push((c & 0x3F) | 0x80);
-            } else if (c >= 0x000080 && c <= 0x0007FF) {
-                bytes.push(((c >> 6) & 0x1F) | 0xC0);
-                bytes.push((c & 0x3F) | 0x80);
-            } else {
-                bytes.push(c & 0xFF);
-            }
-        }
-        document.write(bytes);
+        document.write(encodeURIComponent(str));
         
     </script>
 </head>
